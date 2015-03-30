@@ -1,4 +1,4 @@
-\documentclass[slidestop,mathserif,compress,xcolor=svgnames]{beamer} 
+\documentclass[t,compress,xcolor=svgnames]{beamer} 
 \mode<presentation>
 {  
   \setbeamertemplate{background canvas}[vertical shading][bottom=blue!5,top=blue!5]
@@ -102,7 +102,7 @@
        
 \institute[HPC@LSU - http://www.hpc.lsu.edu] {\inst{}\footnotesize{User Services Consultant\\LSU HPC \& LONI\\sys-help@loni.org}}
 
-\date[{Apr. 18, 2012\hspace{2cm}}]{\scriptsize{HPC Training Series\\Louisiana State University\\Baton Rouge\\Apr. 18, 2012}}
+\date[{Apr. 10, 2013\hspace{2cm}}]{\scriptsize{HPC Training Series\\Louisiana State University\\Baton Rouge\\Apr. 10, 2013}}
      
 \subject{Talks}
 % This is only inserted into the PDF information catalog. Can be left
@@ -158,16 +158,44 @@
     \item Octave is a high-level language, primarily intended for numerical computations. 
     \item It provides a convenient command line interface for solving linear and nonlinear problems numerically, and for performing other numerical experiments. 
       \item It may also be used as a batch-oriented language.
-      \item Octave is often viewed as a system for numerical computations with a language that is mostly compatible with Matlab, but that is available as free software under the GNU GPL, and that can replace it in many circumstances.
+      \item Octave is often viewed as a system for numerical computations with a language that is mostly compatible with MATLAB, but that is available as free software under the GNU GPL, and that can replace it in many circumstances.
   \end{itemize}
 
   \begin{eblock}{Tutorial Goals}
     \begin{itemize}
       \item The goal of this tutorial is to provide a brief introduction to a few of the capabilities of GNU Octave.
-      \item Most of the functionality of Matlab already exists in GNU Octave and octave can run most Matlab scripts.
-      \item Matlab users should review differences between Matlab and GNU Octave before porting matlab scripts to octave. \url{http://en.wikibooks.org/wiki/MATLAB_Programming/Differences_between_Octave_and_MATLAB}
+      \item Most of the functionality of MATLAB already exists in GNU Octave and octave can run most MATLAB scripts.
+      \item MATLAB users should review differences between MATLAB and GNU Octave before porting MATLAB scripts to octave. \url{http://en.wikibooks.org/wiki/MATLAB_Programming/Differences_between_Octave_and_MATLAB}
     \end{itemize}
   \end{eblock}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{\small Differences between MATLAB and GNU Octave}
+  \begin{itemize}
+    \item GNU Octave is mostly compatible with MATLAB. However, Octave's parser allows some (often very useful) syntax that MATLAB's does not, so programs written for Octave might not run in MATLAB.
+    \item Octave supports the use of both single and double quotes. MATLAB only supports single quotes, which means parsing errors will occur if you try to use double quotes (e.g. in an Octave script when run on MATLAB).
+    \item Octave supports C-style autoincrement and assignment operators, MATLAB does not
+    \item[] \texttt{i++; ++i; i+=1; etc.}
+    \item Octave supports temporary expressions.
+    \item[] \texttt{columns = size(mtx)(2);   \%  works in Octave, fails in MATLAB}
+    \item[] \texttt{tmp = size(mtx);}
+    \item[] \texttt{columns = tmp(2);         \%  works in both}
+    \item MATLAB (7.0) and Octave (3.0.2) responds differently when computing the product of boolean values:
+    \item[] \texttt{X = ones(2,2) ; prod(size(X)==1)}
+    \item[] \texttt{MATLAB: ??? Function 'prod' is not defined for values of class 'logical'.}
+    \item[] \texttt{Octave: ans = 0}
+    \item MATLAB will execute a file named 'startup.m' in the directory it was called from on the command line. Octave does not. It will, however, execute a file named '.octaverc' which can be edited to execute existing files
+    \item MATLAB lets you load empty files, OCTAVE does not.
+    \item MATLAB doesn't support `printf' as a command for printing to the screen.
+    \item MATLAB doesn't allow whitespace before the transpose operator.
+    \item MATLAB always requires `...' for line continuation.
+    \item MATLAB uses the percent sign '\%' to begin a comment. Octave uses both the hash symbol '\#' and the percent sign '\%' interchangeably.
+    \item For exponentiation, Octave can use '$^\wedge$' or `**'; MATLAB requires '$^\wedge$'.
+    \item For string delimiters, Octave can use ' or "; MATLAB requires '.
+    \item For ends, Octave can use `end' or specify the block with `end\{if,for, $\cdots$\}'; MATLAB requires `end'.
+    \item Octave supports C-style hexadecimal notation (e.g. "0xF0"); MATLAB requires the hex2dec function (e.g. "hex2dec('F0')").
+    \item The main difference is the lack of GUI for Octave.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -182,7 +210,8 @@
       \item{Ubuntu:} \texttt{apt-get install octave}
       \item{Fedora:} \texttt{yum install octave}
     \end{enumerate}
-    \item LSU HPC \& LONI: Add soft key +octave-3.0.3-intel-11.1 to your .soft file and resoft
+    \item LSU HPC \& LONI: Add soft key +octave-3.0.3-intel-11.1 to your .soft file and resoft.
+    \item SuperMike II: Add soft key +octave-3.6.4-gcc-4.4.6 to your .soft file and resoft.
   \end{itemize}
 \end{frame}
 
@@ -207,8 +236,8 @@
     \item Commands can be typed at the prompt or read from a script.
     \item Scripts are plain text files with file suffix \texttt{.m}.
     \item To run a script, type the script name without the suffix.
-    \item ``,'' separates commands in a line and displays the output on the screen.
-    \item To suppress output, use ``;''.
+    \item "," separates commands in a line and displays the output on the screen.
+    \item To suppress output, use ";".
     \item Comments are preceeded by \%.
     \item Octave is case-sensitive.
     \item Getting Help:
@@ -231,7 +260,7 @@
         \item[Subtraction:] -
         \item[Multiplication:] *
         \item[Division:] /
-        \item[Exponentiation:] **
+        \item[Exponentiation:] ** or $^\wedge$
       \end{description}
     \end{eblock}
     \column{0.6\textwidth}
@@ -746,11 +775,11 @@ endif
         \column{6cm}
         \begin{verbatim}
 if (rem (x,2) == 0)
-    printf (``x is even\n'');
+    printf ("x is even\n");
 elseif (rem (x,3) == 0)
-    printf (``x is odd and divisible by 3\n'');
+    printf ("x is odd and divisible by 3\n");
 else
-    printf (``x is odd\n'')
+    printf ("x is odd\n")
 endif
         \end{verbatim}
       \end{columns}
@@ -778,14 +807,14 @@ endswitch
 a = rem (y,2);
 switch a
   case 0
-    printf (``x is even\n'');
+    printf ("x is even\n");
   otherwise
     b = rem (y,3);
     switch b
       case 0
-        printf (``x is odd and divisible by 3\n'');
+        printf ("x is odd and divisible by 3\n");
       otherwise
-        printf (``x is odd\n'')
+        printf ("x is odd\n")
     endswitch
 endswitch
         \end{verbatim}
@@ -856,7 +885,7 @@ for I=1:N
   for J=1:M
     sumft=sumft+ftmwvels(I,J)^2;
   endfor
-  fprintf(fid,'' %15.8e  %21.14e\n'',(I-1)*dw,sumft);
+  fprintf(fid," %15.8e  %21.14e\n",(I-1)*dw,sumft);
 endfor
         \end{verbatim}
       \end{columns}
@@ -941,14 +970,14 @@ A =
     \item Opening and Closing Files: When reading or writing data to a file, it must be opened first
     {\tiny
       \begin{verbatim}
-fid = fopen(``water-hexamer-cage-bomd.ftmwvels'',''w'');
+fid = fopen("water-hexamer-cage-bomd.ftmwvels","w");
 dw = 1/(N*deltat);
 for I=[1:N]
   sumft=0;
   for J=[1:M]
     sumft=sumft+ftmwvels(I,J)^2;
   endfor
-  fprintf(fid,'' %15.8e  %21.14e\n'',(I-1)*dw,sumft);
+  fprintf(fid," %15.8e  %21.14e\n",(I-1)*dw,sumft);
 endfor
 fclose(fid);
       \end{verbatim}
@@ -1003,10 +1032,10 @@ endfunction
        \begin{verbatim}
 [apacheco@tezpur1 octave]$ cat hello.m 
 function hello (message)
-   printf (``%s\n'',message)                                                     
+   printf ("%s\n",message)                                                     
 endfunction
 [apacheco@tezpur1 octave]$ octave -q
-octave:1> hello (``Hello World'')
+octave:1> hello ("Hello World")
 Hello World
        \end{verbatim}
      \end{columns}
@@ -1060,9 +1089,9 @@ endfunction
        \begin{verbatim}
 b = rand(20,1);
 [max,id] = vmax(b); 
-printf ( ``Average of vector v = %f\n'', avg(v)) 
-printf ( ``Maximum value of vector b = %f with \
-   id = %d\n'',max,id )
+printf ( "Average of vector v = %f\n", avg(v)) 
+printf ( "Maximum value of vector b = %f with \
+   id = %d\n",max,id )
 
 
 [apacheco@tezpur1 octave] ./func.sh 
@@ -1114,8 +1143,8 @@ endfunction
 b = rand(20,1);
 [max,id] = vmax(b); 
 
-printf ( ``Average of vector v = %f\n'', avg(v)) 
-printf ( ``Maximum value of vector b = %f with id = %d\n'',max,id )
+printf ( "Average of vector v = %f\n", avg(v)) 
+printf ( "Maximum value of vector b = %f with id = %d\n",max,id )
 
 [apacheco@tezpur1 octave]$ octave -q
 octave:1> source('func.txt')
@@ -1155,8 +1184,8 @@ endfunction
 b = rand(20,1);
 [max,id] = vmax(b); 
 
-printf ( ``Average of vector v = %f\n'', avg(v)) 
-printf ( ``Maximum value of vector b = %f with id = %d\n'',max,id )
+printf ( "Average of vector v = %f\n", avg(v)) 
+printf ( "Maximum value of vector b = %f with id = %d\n",max,id )
 
 [apacheco@tezpur1 octave]$ ls -l func.sh 
 -rwxr-xr-x  1 apacheco Admins 450 Apr 16 11:39 func.sh
@@ -1178,16 +1207,16 @@ Maximum value of vector b = 0.986472 with id = 15
 #!/usr/local/packages/octave/3.0.3/intel-11.1/bin/octave -qf
 
 if(nargin!=4)
-   printf (``%s\n'', ``This script needs 4 arguments, [Velocity File (input)], \
-        [FT-VAC File (output)], [Number of Atoms], [Time Step in fs]'' )
+   printf ("%s\n", "This script needs 4 arguments, [Velocity File (input)], \
+        [FT-VAC File (output)], [Number of Atoms], [Time Step in fs]" )
 endif
 
 arg_list = argv();
-printf (``Argument list:'');
+printf ("Argument list:");
 for i = 1:nargin
-  printf (`` %s'', arg_list{i});
+  printf (" %s", arg_list{i});
 endfor
-printf (``\n'');
+printf ("\n");
 
 Vels = arg_list{1};
 VelsFT = arg_list{2};
@@ -1198,7 +1227,7 @@ M = NAtoms*3;
 mwvels = load(Vels);
 N = rows(mwvels);
 ftmwvels = abs(fft(mwvels,N));
-fid = fopen(VelsFT,''w'');
+fid = fopen(VelsFT,"w");
 
 dw = 1/(N*deltat);
 for I=[1:N]
@@ -1206,7 +1235,7 @@ for I=[1:N]
   for J=[1:M]
     sumft=sumft+ftmwvels(I,J)^2;
   endfor
-  fprintf(fid,'' %15.8e  %21.14e\n'',(I-1)*dw,sumft);
+  fprintf(fid," %15.8e  %21.14e\n",(I-1)*dw,sumft);
 endfor
 fclose(fid);
 
@@ -1258,4 +1287,23 @@ Argument list: water-hexamer-cage-admp.mwvels water-hexamer-cage-admp.ftmwvels 1
     \item Octave Tutorials: \url{http://en.wikibooks.org/wiki/Octave_Programming_Tutorial}
   \end{enumerate}
 \end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \color{DarkBlue}{
+  \begin{center}
+    {\fontsize{40}{60}\selectfont The End}\\
+    \vspace{1cm}
+    {\fontsize{20}{30}\selectfont Any Questions?}\\
+    \vspace{0.5cm}
+    {\fontsize{15}{30}\selectfont
+      \color{red!80!black}{Next Week}\\      
+      \color{red!80!black}{Introduction to GNUPlot}\\
+    }
+    \vspace{0.5cm}
+    {\fontsize{15}{20}\selectfont Survey: \color{red!90!white}{\url{http://www.hpc.lsu.edu/survey}}}
+  \end{center}
+  }
+\end{frame}
+
 \end{document}
